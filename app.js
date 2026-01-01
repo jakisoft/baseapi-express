@@ -1,0 +1,27 @@
+const express = require("express");
+const chalk = require("chalk");
+const morgan = require("morgan");
+
+const app = express();
+const port = process.env.PORT || 2500;
+
+app.use(express.json());
+app.set("json spaces", 2);
+app.use(morgan("dev"));
+
+app.listen(port, () => {
+  console.clear();
+  const line = chalk.gray("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  const title = chalk.bold.greenBright("SERVER STARTED SUCCESSFULLY");
+  const info = [
+    `${chalk.bold.cyan("Port")}   : ${chalk.bold.white(port)}`,
+    `${chalk.bold.cyan("Local")}  : ${chalk.bold.white(`http://localhost:${port}`)}`,
+    `${chalk.bold.cyan("Public")} : ${
+      process.env.DOMAIN
+        ? chalk.bold.white(`https://${process.env.DOMAIN}`)
+        : chalk.bold.gray("-")
+    }`
+  ].join("\n");
+
+  console.log(`\n${line}\n${title}\n\n${info}\n${line}\n`);
+});
