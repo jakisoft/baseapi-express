@@ -42,7 +42,12 @@ router.get("/facebook", async (req, res) => {
 
     if (data.videos?.hd?.url) {
       const filename = makeFilename("facebook_hd")
-      const uploaded = await uploadFile(data.videos.hd.url, filename)
+      const dataRes = await axios.get(data.videos.hd.url, {
+        responseType: "arraybuffer"
+      })
+
+      const dataBuffer = Buffer.from(dataRes.data)
+      const uploaded = await uploadFile(dataBuffer, filename)
 
       result.videos.hd = {
         size: data.videos.hd.size,
@@ -51,8 +56,12 @@ router.get("/facebook", async (req, res) => {
     }
 
     if (data.videos?.sd?.url) {
-      const filename = makeFilename("facebook_sd")
-      const uploaded = await uploadFile(data.videos.sd.url, filename)
+      const dataRes = await axios.get(data.videos.hd.url, {
+        responseType: "arraybuffer"
+      })
+
+      const dataBuffer = Buffer.from(dataRes.data)
+      const uploaded = await uploadFile(dataBuffer, filename)
 
       result.videos.sd = {
         size: data.videos.sd.size,
