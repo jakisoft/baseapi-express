@@ -131,7 +131,7 @@ router.get("/youtube/mp3", async (req, res) => {
       timeout: 60000
     })
 
-    const filename = makeFilename("youtube_mp3", "m4a")
+    const filename = data.caption || "audioyt.m4a"
     const uploaded = await uploadFile(Buffer.from(audioRes.data), filename)
 
     res.json({
