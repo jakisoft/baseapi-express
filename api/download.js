@@ -101,76 +101,27 @@ router.get("/youtube/mp3", async (req, res) => {
       })
     }
 
-    const initRes = await axios.get(
-      "https://p.savenow.to/ajax/download.php",
+    const audioRes = await axios.get(
+      "https://getlate.dev/api/tools/youtube-video-downloader",
       {
         params: {
-          copyright: 0,
-          format: "mp3",
           url,
-          api: "dfcb6d76f2f6a9894gjkege8a4ab232222"
+          formatId: 3
         },
-        timeout: 20000,
+        responseType: "arraybuffer",
+        timeout: 60000,
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36",
-          Referer: "https://savenow.to/"
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36"
         }
       }
     )
 
-    const initData = initRes.data
-    if (!initData?.success || !initData.id) {
-      return res.status(500).json({
-        success: false,
-        message: "Gagal memulai konversi YouTube MP3"
-      })
-    }
-
-    const taskId = initData.id
-    let downloadUrl = null
-    let attempt = 0
-    const maxAttempt = 30
-
-    while (attempt < maxAttempt) {
-      const progressRes = await axios.get(
-        "https://p.savenow.to/api/progress",
-        {
-          params: { id: taskId },
-          timeout: 15000
-        }
-      )
-
-      const progressData = progressRes.data
-
-      if (progressData?.success && progressData.download_url) {
-        downloadUrl = progressData.download_url
-        break
-      }
-
-      attempt++
-      await sleep(2000)
-    }
-
-    if (!downloadUrl) {
-      return res.status(504).json({
-        success: false,
-        message: "Timeout menunggu proses konversi MP3"
-      })
-    }
-
-    const mp3Res = await axios.get(downloadUrl, {
-      responseType: "arraybuffer",
-      timeout: 60000
-    })
-
     const filename = makeFilename("youtube_mp3")
-    const uploaded = await uploadFile(Buffer.from(mp3Res.data), filename)
+    const uploaded = await uploadFile(Buffer.from(audioRes.data), filename)
 
     res.json({
       success: true,
-      title: initData.title || initData.info?.title || "",
-      thumbnail: initData.info?.image || null,
       audio: {
         url: uploaded.url
       }
