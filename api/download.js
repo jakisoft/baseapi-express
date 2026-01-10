@@ -101,27 +101,44 @@ router.get("/youtube/mp3", async (req, res) => {
       })
     }
 
-    const audioRes = await axios.get(
-      "https://getlate.dev/api/tools/youtube-video-downloader",
+    const metaRes = await axios.post(
+      "https://thesocialcat.com/api/youtube-download",
       {
-        params: {
-          url,
-          formatId: 3
-        },
-        responseType: "arraybuffer",
-        timeout: 60000,
+        url,
+        format: "audio"
+      },
+      {
+        timeout: 30000,
         headers: {
+          "Content-Type": "application/json",
           "User-Agent":
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36"
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36",
+          Referer: "https://thesocialcat.com/tools/youtube-video-downloader"
         }
       }
     )
+
+    const data = metaRes.data
+    if (!data?.mediaUrl) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal mengambil audio YouTube"
+      })
+    }
+
+    const audioRes = await axios.get(data.mediaUrl, {
+      responseType: "arraybuffer",
+      timeout: 60000
+    })
 
     const filename = makeFilename("youtube_mp3")
     const uploaded = await uploadFile(Buffer.from(audioRes.data), filename)
 
     res.json({
       success: true,
+      title: data.caption || "",
+      thumbnail: data.thumbnail || null,
+      duration: data.videoMeta?.duration || null,
       audio: {
         url: uploaded.url
       }
