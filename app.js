@@ -11,7 +11,7 @@ app.use(express.json());
 app.set("json spaces", 2);
 app.use(morgan("dev"));
 
-app.use("/download", download)
+app.use("/api/download", download)
 
 app.listen(port, () => {
   console.clear();
