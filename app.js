@@ -2,12 +2,16 @@ const express = require("express");
 const chalk = require("chalk");
 const morgan = require("morgan");
 
+const download = require("./api/download");
+
 const app = express();
 const port = process.env.PORT || 2500;
 
 app.use(express.json());
 app.set("json spaces", 2);
 app.use(morgan("dev"));
+
+app.use("/download", download)
 
 app.listen(port, () => {
   console.clear();
