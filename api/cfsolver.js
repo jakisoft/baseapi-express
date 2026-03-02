@@ -3,7 +3,7 @@ const { TurnstileMin } = require("../lib/cfsolver")
 
 const router = express.Router()
 
-router.get("/turnstilemin", turnstileLimiter, async (req, res) => {
+router.get("/turnstilemin", async (req, res) => {
   const { url, sitekey } = req.query
 
   if (!url || !sitekey) {
