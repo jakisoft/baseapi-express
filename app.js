@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const morgan = require("morgan");
 
 const download = require("./api/download");
+const cfsolver = require("./api/cfsolver");
 
 const app = express();
 const port = process.env.PORT || 2500;
@@ -12,6 +13,7 @@ app.set("json spaces", 2);
 app.use(morgan("dev"));
 
 app.use("/download", download)
+app.use("/cfsolver", cfsolver)
 
 app.listen(port, () => {
   console.clear();
