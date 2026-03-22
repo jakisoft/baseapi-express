@@ -18,6 +18,7 @@ async function connectToDatabase() {
   const client = await MongoClient.connect(MONGO_URI);
   const db = client.db(DB_NAME);
   cachedDb = db;
+  console.log(db);
   return db;
 }
 
