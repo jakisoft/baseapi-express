@@ -4,6 +4,7 @@ const morgan = require("morgan");
 
 const download = require("./api/download");
 const cfsolver = require("./api/cfsolver");
+const notifylink = require("./api/notifylink");
 
 const app = express();
 const port = process.env.PORT || 2500;
@@ -14,6 +15,7 @@ app.use(morgan("dev"));
 
 app.use("/download", download)
 app.use("/cfsolver", cfsolver)
+app.use("/api", notifylink)
 
 app.listen(port, () => {
   console.clear();
