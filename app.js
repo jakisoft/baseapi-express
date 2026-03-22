@@ -15,7 +15,7 @@ app.use(morgan("dev"));
 
 app.use("/download", download)
 app.use("/cfsolver", cfsolver)
-app.use("/api", notifylink)
+app.use("/notifylink", notifylink)
 
 app.listen(port, () => {
   console.clear();
